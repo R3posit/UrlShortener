@@ -1,0 +1,84 @@
+﻿<html>
+<head>
+    <title>Shorter Url</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        #longUrl {
+            width: 400px;
+            height: 40px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #sonuc {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>URL Shortener</h2>
+    <input id="longUrl" type="text" placeholder="Uzun linki buraya yapıştır..." />
+    <button onclick="gonder()">Kısalt</button>
+
+    <div id="sonuc"></div>
+
+    <script>
+        async function gonder() {
+            var girilenLink = document.getElementById("longUrl").value;
+
+            try {
+                const response = await fetch("api/Url", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        longUrl: girilenLink
+                    })
+                });
+
+                if (!response.ok) {
+                    alert("Bir hata oluştu");
+                    return;
+                }
+
+                const veri = await response.json();
+                var link = window.location.origin + "/api/Url/" + veri.shortUrl;
+                document.getElementById("sonuc").innerHTML = `<a href="${link}" target="_blank">${link}</a>`
+            } catch (err) {
+                console.log("Güm :" + err);
+            }
+        }
+    </script>
+</body>
+</html>
